@@ -233,7 +233,7 @@ if "messages" not in st.session_state:
         {
             "role": "assistant",
             "content": (
-                "👋 ¡Hola! Soy Amparito la de Recursos Humanos.\n\n"
+                "👋 ¡Hola! Soy tu Chatbot de Recursos Humanos.\n\n"
                 "Puedo ayudarte con cosas como:\n"
                 "- Políticas de vacaciones 🏖️\n"
                 "- Beneficios y bienestar 🎁\n"
@@ -245,12 +245,12 @@ if "messages" not in st.session_state:
     ]
 
 # 🧱 Encabezado principal
-st.title("🤖 Amparito la de Recursos Humanos")
+st.title("🤖 Chatbot para Recursos Humanos")
 st.caption("Tu asistente amigable de RRHH – cero tecnicismos, respuestas claras y un toque de humor 😄")
 
 # 🎯 Sidebar con información extra
 with st.sidebar:
-    st.subheader("Acerca de este Amparito")
+    st.subheader("Acerca de este chatbot")
     st.write(
         """
         Este asistente está pensado para:
@@ -361,7 +361,7 @@ Si ves “command not found” o similar, asegúrate de cerrar y abrir de nuevo 
 
 ---
 
-## 5.3. Descargar (hacer *pull*) del modelo `llama3.1`
+## 5.3. Descargar (hacer *pull*) del modelo `deepseek-r1:1.5b`
 Ahora vamos a **bajar el modelo de IA** que usará el chatbot.
 En la misma terminal escribe:
 
@@ -529,6 +529,7 @@ En la terminal escribe:
 ```
 streamlit run app.py
 ```
+<img width="1600" height="656" alt="image" src="https://github.com/user-attachments/assets/67022a2e-f5aa-4910-98c0-f18235354e57" />
 
 Y tendrás un chatbot funcional:
 
