@@ -112,6 +112,9 @@ En la misma terminal escribe:
 ```
 venv\Scripts\activate.bat
 ```
+<img width="1292" height="957" alt="image" src="https://github.com/user-attachments/assets/80fe2f48-97ca-4c9c-ac57-6f6b46637ba7" />
+
+
 si tienes algùn error, por ejemplo un mensaje en rojo, ejecuta el comando así:
 
 ```
@@ -132,15 +135,14 @@ Si funciona, verás algo así:
 
 Con el entorno activado, instala:
 
+<img width="1448" height="981" alt="image" src="https://github.com/user-attachments/assets/7af4e76f-3393-4161-8759-0bfdb1ee5020" />
+
+
 ```
 pip install streamlit langchain langchain-openai python-dotenv
 ```
 
-Si deseas usar **OpenAI**, instala también:
 
-```
-pip install openai
-```
 
 ---
 
@@ -150,9 +152,13 @@ pip install openai
 
 Vamos a crear primero **lo que las personas verán**, antes del cerebro del chatbot.
 
-En VSCode crea un archivo llamado:
+En VSCode dentro de la carpeta que estàs trabajando,  crea un archivo llamado:
 
 📄 `app.py`
+
+
+<img width="1600" height="855" alt="image" src="https://github.com/user-attachments/assets/9cec2cc1-6e8b-4944-a96d-ddd97c2ae70a" />
+
 
 Y pega esto:
 
@@ -174,7 +180,13 @@ if st.button("Enviar"):
         st.write("💬 Respuesta del modelo aparecerá aquí...")
 ```
 
+<img width="1267" height="973" alt="image" src="https://github.com/user-attachments/assets/80d5d110-5084-49db-99b2-9204e888775a" />
+
+
 Para probar la interfaz:
+
+<img width="1127" height="976" alt="image" src="https://github.com/user-attachments/assets/bbc7ec39-8b19-4b73-a7e1-325484954e64" />
+
 
 En la terminal (con el entorno activado):
 
@@ -184,52 +196,13 @@ streamlit run app.py
 
 Se abrirá un navegador con tu interfaz ✨
 
----
+<img width="1600" height="729" alt="image" src="https://github.com/user-attachments/assets/f4f94a38-1801-42d0-a227-26cef4e832f5" />
 
 ---
 
-# 5. 🧠 **Crear el Modelo con LangChain (PASO 2)**
 
-Ahora crearemos “el cerebro” del chatbot.
 
-Crea un archivo:
 
-📄 `modelo.py`
-
-Y pega esto:
-
-```python
-import os
-from langchain_openai import ChatOpenAI
-
-def cargar_modelo():
-    # Modelo base
-    modelo = ChatOpenAI(
-        model="gpt-4o-mini",
-        temperature=0.2
-    )
-    return modelo
-
-def responder_pregunta(pregunta):
-    modelo = cargar_modelo()
-
-    respuesta = modelo.invoke(pregunta)
-
-    return respuesta.content
-```
-
-IMPORTANTE:
-Crea un archivo **.env** con tu API key de OpenAI:
-
-📄 `.env`
-
-```
-OPENAI_API_KEY=tu_api_key
-```
-
-*Tu API Key se consigue en [https://platform.openai.com](https://platform.openai.com)*
-
----
 
 ---
 
@@ -288,12 +261,6 @@ Y tendrás un chatbot funcional:
 ✔ Convertirlo en una app web.
 ✔ Integrarlo en Teams o Slack.
 
-Si quieres, te puedo ayudar a:
-
-👉 agregar memoria
-👉 agregar documentos PDF para que responda sobre ellos
-👉 hacerlo multilingüe
-👉 ponerlo en la nube (AWS, Azure o GCP)
 
 ---
 
