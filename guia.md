@@ -54,18 +54,7 @@ VSCode será tu "editor" para escribir el proyecto.
 2. Descargar versión para Windows.
 3. Instalar con opciones por defecto.
 4. Abrir VSCode al final.
-
----
-
-## 1.3. **Instalar Git (opcional pero recomendado)**
-
-Permite que VSCode funcione mejor con proyectos.
-
-1. Ir a: [https://git-scm.com/downloads](https://git-scm.com/downloads)
-2. Descargar para Windows.
-3. Instalar con opciones por defecto.
-
----
+<img width="1600" height="863" alt="image" src="https://github.com/user-attachments/assets/2c346a31-492b-44ea-bacd-8beed3759125" />
 
 ---
 
@@ -82,6 +71,10 @@ Crea una carpeta en tu escritorio:
 
 📁 `C:\Users\tu_usuario\Desktop\chatbot-rh`
 
+<img width="212" height="198" alt="image" src="https://github.com/user-attachments/assets/e8237e0b-464d-4525-b3c8-7a2e122760cd" />
+
+
+
 ---
 
 ## 2.2. Abrir VSCode en esa carpeta
@@ -89,6 +82,9 @@ Crea una carpeta en tu escritorio:
 1. Abre VSCode.
 2. Arrastra la carpeta dentro del VSCode.
    (o usa **File > Open Folder**)
+
+<img width="1600" height="861" alt="image" src="https://github.com/user-attachments/assets/e312ddb2-be49-4379-a1fa-1758e127cdf0" />
+
 
 ---
 
