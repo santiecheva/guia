@@ -305,7 +305,7 @@ if prompt:
 
 ```
 
-<img width="1267" height="973" alt="image" src="https://github.com/user-attachments/assets/80d5d110-5084-49db-99b2-9204e888775a" />
+<img width="1275" height="987" alt="image" src="https://github.com/user-attachments/assets/3f3ebbb2-24c7-4f9c-a99b-2862fab30111" />
 
 
 Para probar la interfaz:
