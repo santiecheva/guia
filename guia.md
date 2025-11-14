@@ -43,6 +43,8 @@ Debe aparecer algo como `Python 3.x.x`.
 
 
 ---
+<img width="1160" height="581" alt="image" src="https://github.com/user-attachments/assets/8433998c-ac35-4576-bc31-5c28e9666016" />
+
 
 ## 1.2. **Instalar Visual Studio Code (VSCode)**
 
