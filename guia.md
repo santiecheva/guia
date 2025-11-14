@@ -139,7 +139,8 @@ Con el entorno activado, instala:
 
 
 ```
-pip install streamlit langchain langchain-openai python-dotenv
+pip install streamlit langchain langchain-ollama python-dotenv ollama
+
 ```
 
 
@@ -201,37 +202,128 @@ Se abrirá un navegador con tu interfaz ✨
 ---
 
 
+# 5. 🐪 **Instalar Ollama y Descargar el Modelo (ANTES DE CONECTAR EL CHATBOT)**
 
+Ollama es el programa que permite tener modelos de IA **locales y gratuitos** en tu computador.
+Piensa en Ollama como “la fábrica de cerebros” donde vas a descargar el modelo que usará el chatbot.
 
+---
+
+## 5.1. Descargar e instalar Ollama
+
+1. Ve a: [https://ollama.com](https://ollama.com)
+2. Haz clic en **Download for Windows**.
+3. Abre el instalador (`Ollama Setup.exe`) y sigue los pasos por defecto (Siguiente, Siguiente…).
+4. Cuando termine, Ollama quedará instalado y normalmente se ejecuta solo en segundo plano.
+
+---
+
+## 5.2. Verificar que Ollama funciona
+
+1. Abre el **Símbolo del sistema** (cmd) o una terminal nueva.
+2. Escribe:
+
+```bash
+ollama --version
+```
+
+Si todo está bien, verás un número de versión (por ejemplo `0.3.x`).
+Si ves “command not found” o similar, asegúrate de cerrar y abrir de nuevo la terminal o reiniciar el equipo.
+
+---
+
+## 5.3. Descargar (hacer *pull*) del modelo `llama3.1`
+
+Ahora vamos a **bajar el modelo de IA** que usará el chatbot.
+En la misma terminal escribe:
+
+```bash
+ollama pull llama3.1
+```
+
+* La **primera vez** puede tardar varios minutos (está descargando el modelo).
+* Solo tienes que hacerlo **una vez**. Después ya queda guardado.
+
+---
+
+## 5.4. Probar el modelo rápidamente (opcional)
+
+Solo para ver que funciona:
+
+```bash
+ollama run llama3.1
+```
+
+Escribe algo como:
+
+> Hola, ¿qué puedes hacer?
+
+Te responderá en la misma terminal.
+Para salir, presiona **Ctrl + C**.
+
+Con esto ya tienes:
+
+✅ Ollama instalado
+✅ Modelo `llama3.1` descargado y listo para usar
+
+Ahora sí, vamos a conectar **Streamlit + LangChain + Ollama**.
 
 ---
 
 # 6. 🔌 **Conectar la Interfaz con el Modelo (PASO FINAL)**
 
-Ahora vuelve a abrir `app.py`
-y cámbialo por esta versión:
+Ahora vamos a unir todo en **un solo archivo `app.py`**:
+
+* La interfaz (Streamlit).
+* El modelo (Ollama vía LangChain).
+* La lógica para responder preguntas.
+
+Abre `app.py` y **reemplaza todo el contenido** por este:
 
 ```python
+import streamlit as st
 from langchain_ollama import ChatOllama
 
+# 1. Configuración de la página
+st.set_page_config(page_title="Chatbot RH", page_icon="🤖")
+
+st.title("🤖 Chatbot para Recursos Humanos")
+st.write("Haz tus preguntas sobre procesos de talento humano, cultura, bienestar, etc.")
+
+# 2. Función para cargar el modelo de Ollama
+@st.cache_resource
 def cargar_modelo():
     # Modelo local y gratuito usando Ollama
     modelo = ChatOllama(
         model="llama3.1",   # nombre del modelo que bajaste con `ollama pull`
-        temperature=0.2
+        temperature=0.2     # qué tan creativo es (0 = muy serio, 1 = muy creativo)
     )
     return modelo
 
+# 3. Función que envía la pregunta al modelo
 def responder_pregunta(pregunta: str) -> str:
     modelo = cargar_modelo()
-
-    # Igual que antes, invoke devuelve un mensaje con .content
     respuesta = modelo.invoke(pregunta)
-
     return respuesta.content
+
+# 4. Interfaz de Streamlit
+pregunta = st.text_input("✍️ Escribe tu pregunta aquí:")
+
+if st.button("Enviar"):
+    if pregunta.strip() == "":
+        st.warning("Por favor escribe una pregunta.")
+    else:
+        with st.spinner("Pensando la mejor respuesta..."):
+            respuesta = responder_pregunta(pregunta)
+        st.success("Respuesta del chatbot:")
+        st.write(respuesta)
 ```
 
----
+Puntos clave para explicar a alguien de RRHH:
+
+* `cargar_modelo()` 👉 es donde definimos qué modelo usamos (`llama3.1`).
+* `responder_pregunta()` 👉 es la función que envía la pregunta al modelo y devuelve la respuesta.
+* La parte de **Streamlit** (abajo) muestra el cuadro de texto, el botón y la respuesta.
 
 ---
 
@@ -263,4 +355,9 @@ Y tendrás un chatbot funcional:
 
 
 ---
+
+
+
+
+
 
