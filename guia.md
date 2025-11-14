@@ -323,6 +323,7 @@ Piensa en Ollama como “la fábrica de cerebros” donde vas a descargar el mod
 <img width="1600" height="855" alt="image" src="https://github.com/user-attachments/assets/05787bd3-347a-4379-b1b3-5c25c5fd781c" />
 <img width="1600" height="829" alt="image" src="https://github.com/user-attachments/assets/b9374ede-5340-433a-8001-a798f3bee654" />
 
+<img width="872" height="661" alt="image" src="https://github.com/user-attachments/assets/330bdabe-bbbf-49af-87d4-8cbf80134577" />
 
 ---
 
