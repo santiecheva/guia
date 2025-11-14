@@ -174,13 +174,19 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 🧼 Un poco de CSS para que se vea más pro (tipo chat)
+# 🧼 CSS: fondo negro + letra blanca
 st.markdown(
     """
     <style>
-    /* Fondo suave tipo app moderna */
+    /* Fondo negro */
     .stApp {
-        background: linear-gradient(135deg, #f3f4ff 0%, #eef9ff 50%, #fff8ff 100%);
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+
+    /* Texto general en blanco */
+    * {
+        color: #ffffff !important;
     }
 
     /* Ocultar menú y pie de página de Streamlit */
@@ -194,9 +200,27 @@ st.markdown(
         padding-bottom: 2rem;
     }
 
-    /* Título centrado */
-    h1 {
+    /* Títulos centrados y blancos */
+    h1, h2, h3, h4, h5, h6 {
         text-align: center;
+        color: #ffffff !important;
+    }
+
+    /* Sidebar oscuro */
+    section[data-testid="stSidebar"] {
+        background-color: #111111 !important;
+    }
+
+    /* Código dentro del sidebar */
+    .stCode, code {
+        color: #ffffff !important;
+        background-color: #222222 !important;
+    }
+
+    /* Chat bubbles */
+    .stChatMessage {
+        background-color: #111111 !important;
+        color: #ffffff !important;
     }
     </style>
     """,
@@ -209,7 +233,7 @@ if "messages" not in st.session_state:
         {
             "role": "assistant",
             "content": (
-                "👋 ¡Hola! Soy tu *Chatbot de Recursos Humanos*.\n\n"
+                "👋 ¡Hola! Soy Amparito la de Recursos Humanos.\n\n"
                 "Puedo ayudarte con cosas como:\n"
                 "- Políticas de vacaciones 🏖️\n"
                 "- Beneficios y bienestar 🎁\n"
@@ -221,12 +245,12 @@ if "messages" not in st.session_state:
     ]
 
 # 🧱 Encabezado principal
-st.title("🤖 Chatbot para Recursos Humanos")
+st.title("🤖 Amparito la de Recursos Humanos")
 st.caption("Tu asistente amigable de RRHH – cero tecnicismos, respuestas claras y un toque de humor 😄")
 
-# 🎯 Sidebar con información extra (opcional)
+# 🎯 Sidebar con información extra
 with st.sidebar:
-    st.subheader("Acerca de este chatbot")
+    st.subheader("Acerca de este Amparito")
     st.write(
         """
         Este asistente está pensado para:
@@ -236,47 +260,43 @@ with st.sidebar:
         """
     )
     st.markdown("---")
-    st.write("💡 *Tip:* prueba con preguntas como:")
+    st.write("💡 Tip: prueba con preguntas como:")
     st.code("¿Cuántos días de vacaciones tengo al año?")
     st.code("¿Cómo es el proceso de onboarding?")
 
-# 🤹 Función de respuesta DEMO (luego aquí conectas tu modelo real)
+# 🤹 Respuesta demo
 def generar_respuesta_demo(pregunta: str) -> str:
-    # Esta respuesta es solo para que el chat se vea vivo.
-    # Aquí luego puedes llamar a tu modelo con LangChain + Ollama.
     respuesta = f"""
 He recibido tu pregunta:
 
-> **{pregunta}**
+> *{pregunta}*
 
-🔍 *Versión demo:* aquí iría la respuesta inteligente del modelo de IA.
+🔍 Versión demo: aquí iría la respuesta inteligente del modelo de IA.
 
 Como soy un bot de RRHH en modo demostración, te puedo decir algo general:
 
-- Revisaría las políticas internas relacionadas con este tema.
+- Revisaría las políticas internas relacionadas.
 - Te daría una explicación clara y en lenguaje sencillo.
-- Si aplica, te indicaría con quién podrías hablar en RRHH para más detalle.
+- Si aplica, te indicaría con quién podrías hablar en RRHH.
 
 Mientras conectas el modelo real, podemos imaginar que ya soy súper listo 😄
 """
     return respuesta
 
-# 💬 Mostrar historial de mensajes
+# 💬 Mostrar historial del chat
 for msg in st.session_state.messages:
     avatar = "🤖" if msg["role"] == "assistant" else "🧑‍💼"
     with st.chat_message("assistant" if msg["role"] == "assistant" else "user", avatar=avatar):
         st.markdown(msg["content"])
 
-# 🧾 Caja de entrada tipo ChatGPT
+# 🧾 Input del usuario
 prompt = st.chat_input("Escribe tu pregunta sobre Recursos Humanos aquí...")
 
 if prompt:
-    # 1) Agregamos el mensaje del usuario al historial
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="🧑‍💼"):
         st.markdown(prompt)
 
-    # 2) Generamos la respuesta (demo o modelo real)
     with st.chat_message("assistant", avatar="🤖"):
         with st.spinner("Pensando la mejor respuesta para ti... 💭"):
             respuesta = generar_respuesta_demo(prompt)
@@ -342,13 +362,15 @@ Si ves “command not found” o similar, asegúrate de cerrar y abrir de nuevo 
 ---
 
 ## 5.3. Descargar (hacer *pull*) del modelo `llama3.1`
-
 Ahora vamos a **bajar el modelo de IA** que usará el chatbot.
 En la misma terminal escribe:
 
 ```bash
-ollama pull llama3.1
+ollama pull deepseek-r1:1.5b
 ```
+
+<img width="1175" height="281" alt="image" src="https://github.com/user-attachments/assets/1d30d376-d72c-4c4c-80e0-68ffd5910a37" />
+
 
 * La **primera vez** puede tardar varios minutos (está descargando el modelo).
 * Solo tienes que hacerlo **una vez**. Después ya queda guardado.
