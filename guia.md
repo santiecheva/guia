@@ -1,4 +1,4 @@
-La estructura de la guía será:
+# Guía práctica para construir tu propio chatgpt
 
 1. **Instalar herramientas básicas (Windows).**
 2. **Crear un entorno virtual y preparar el proyecto.**
