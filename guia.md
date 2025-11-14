@@ -382,7 +382,7 @@ ollama pull deepseek-r1:1.5b
 Solo para ver que funciona:
 
 ```bash
-ollama run llama3.1
+ollama run deepseek-r1:8b
 ```
 
 Escribe algo como:
@@ -395,7 +395,7 @@ Para salir, presiona **Ctrl + C**.
 Con esto ya tienes:
 
 ✅ Ollama instalado
-✅ Modelo `llama3.1` descargado y listo para usar
+✅ Modelo `deepseek-r1:8b` descargado y listo para usar
 
 Ahora sí, vamos a conectar **Streamlit + LangChain + Ollama**.
 
@@ -502,7 +502,7 @@ if "messages" not in st.session_state:
 def cargar_modelo():
     # Modelo local y gratuito usando Ollama
     modelo = ChatOllama(
-        model="llama3.1",   # nombre del modelo que bajaste con `ollama pull`
+        model="deepseek-r1:8b",   # nombre del modelo que bajaste con `ollama pull`
         temperature=0.2     # qué tan creativo es (0 = muy serio, 1 = muy creativo)
     )
     return modelo
@@ -516,7 +516,7 @@ def responder_pregunta(pregunta: str) -> str:
 
 Puntos clave para explicar a alguien de RRHH:
 
-* `cargar_modelo()` 👉 es donde definimos qué modelo usamos (`llama3.1`).
+* `cargar_modelo()` 👉 es donde definimos qué modelo usamos (`deepseek-r1:8b`).
 * `responder_pregunta()` 👉 es la función que envía la pregunta al modelo y devuelve la respuesta.
 * La parte de **Streamlit** (abajo) muestra el cuadro de texto, el botón y la respuesta.
 
