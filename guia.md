@@ -101,11 +101,18 @@ python -m venv venv
 
 Esto creará una carpeta llamada **venv**.
 
+<img width="1275" height="978" alt="image" src="https://github.com/user-attachments/assets/da399180-eb60-404c-8d88-f5aa1f13827f" />
+
 ---
 
 ## 2.4. Activar el entorno
 
 En la misma terminal escribe:
+
+```
+venv\Scripts\activate.bat
+```
+si tienes algùn error, por ejemplo un mensaje en rojo, ejecuta el comando así:
 
 ```
 venv\Scripts\activate
