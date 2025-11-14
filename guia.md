@@ -416,10 +416,86 @@ import streamlit as st
 from langchain_ollama import ChatOllama
 
 # 1. Configuración de la página
-st.set_page_config(page_title="Chatbot RH", page_icon="🤖")
+import streamlit as st
 
-st.title("🤖 Chatbot para Recursos Humanos")
-st.write("Haz tus preguntas sobre procesos de talento humano, cultura, bienestar, etc.")
+# 🎨 Configuración básica de la página
+st.set_page_config(
+    page_title="Chatbot RH",
+    page_icon="🤖",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# 🧼 CSS: fondo negro + letra blanca
+st.markdown(
+    """
+    <style>
+    /* Fondo negro */
+    .stApp {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+
+    /* Texto general en blanco */
+    * {
+        color: #ffffff !important;
+    }
+
+    /* Ocultar menú y pie de página de Streamlit */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Ajustar el ancho del contenedor principal */
+    .block-container {
+        max-width: 900px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Títulos centrados y blancos */
+    h1, h2, h3, h4, h5, h6 {
+        text-align: center;
+        color: #ffffff !important;
+    }
+
+    /* Sidebar oscuro */
+    section[data-testid="stSidebar"] {
+        background-color: #111111 !important;
+    }
+
+    /* Código dentro del sidebar */
+    .stCode, code {
+        color: #ffffff !important;
+        background-color: #222222 !important;
+    }
+
+    /* Chat bubbles */
+    .stChatMessage {
+        background-color: #111111 !important;
+        color: #ffffff !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# 🧠 Estado de la conversación
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": (
+                "👋 ¡Hola! Soy Amparito la de Recursos Humanos.\n\n"
+                "Puedo ayudarte con cosas como:\n"
+                "- Políticas de vacaciones 🏖️\n"
+                "- Beneficios y bienestar 🎁\n"
+                "- Procesos de selección 🧑‍💼\n"
+                "- Onboarding de nuevas personas 🚀\n\n"
+                "Cuéntame, ¿qué te gustaría saber hoy?"
+            ),
+        }
+    ]
+
 
 # 2. Función para cargar el modelo de Ollama
 @st.cache_resource
@@ -436,18 +512,6 @@ def responder_pregunta(pregunta: str) -> str:
     modelo = cargar_modelo()
     respuesta = modelo.invoke(pregunta)
     return respuesta.content
-
-# 4. Interfaz de Streamlit
-pregunta = st.text_input("✍️ Escribe tu pregunta aquí:")
-
-if st.button("Enviar"):
-    if pregunta.strip() == "":
-        st.warning("Por favor escribe una pregunta.")
-    else:
-        with st.spinner("Pensando la mejor respuesta..."):
-            respuesta = responder_pregunta(pregunta)
-        st.success("Respuesta del chatbot:")
-        st.write(respuesta)
 ```
 
 Puntos clave para explicar a alguien de RRHH:
