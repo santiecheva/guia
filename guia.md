@@ -321,7 +321,7 @@ streamlit run app.py
 
 Se abrirá un navegador con tu interfaz ✨
 
-<img width="1600" height="729" alt="image" src="https://github.com/user-attachments/assets/f4f94a38-1801-42d0-a227-26cef4e832f5" />
+<img width="1021" height="533" alt="image" src="https://github.com/user-attachments/assets/00af5151-1b7a-4061-bec1-9a051d4856e0" />
 
 ---
 
