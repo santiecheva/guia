@@ -166,19 +166,123 @@ Y pega esto:
 ```python
 import streamlit as st
 
-st.set_page_config(page_title="Chatbot RH", page_icon="🤖")
+# 🎨 Configuración básica de la página
+st.set_page_config(
+    page_title="Chatbot RH",
+    page_icon="🤖",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
+# 🧼 Un poco de CSS para que se vea más pro (tipo chat)
+st.markdown(
+    """
+    <style>
+    /* Fondo suave tipo app moderna */
+    .stApp {
+        background: linear-gradient(135deg, #f3f4ff 0%, #eef9ff 50%, #fff8ff 100%);
+    }
+
+    /* Ocultar menú y pie de página de Streamlit */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Ajustar el ancho del contenedor principal */
+    .block-container {
+        max-width: 900px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Título centrado */
+    h1 {
+        text-align: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# 🧠 Estado de la conversación
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": (
+                "👋 ¡Hola! Soy tu *Chatbot de Recursos Humanos*.\n\n"
+                "Puedo ayudarte con cosas como:\n"
+                "- Políticas de vacaciones 🏖️\n"
+                "- Beneficios y bienestar 🎁\n"
+                "- Procesos de selección 🧑‍💼\n"
+                "- Onboarding de nuevas personas 🚀\n\n"
+                "Cuéntame, ¿qué te gustaría saber hoy?"
+            ),
+        }
+    ]
+
+# 🧱 Encabezado principal
 st.title("🤖 Chatbot para Recursos Humanos")
+st.caption("Tu asistente amigable de RRHH – cero tecnicismos, respuestas claras y un toque de humor 😄")
 
-# Área donde el usuario escribe su pregunta
-pregunta = st.text_input("Escribe tu pregunta aquí:")
+# 🎯 Sidebar con información extra (opcional)
+with st.sidebar:
+    st.subheader("Acerca de este chatbot")
+    st.write(
+        """
+        Este asistente está pensado para:
+        - Responder preguntas frecuentes de RRHH  
+        - Servir como ejemplo en un curso de IA  
+        - Mostrar cómo se ve un chat tipo ChatGPT con Streamlit  
+        """
+    )
+    st.markdown("---")
+    st.write("💡 *Tip:* prueba con preguntas como:")
+    st.code("¿Cuántos días de vacaciones tengo al año?")
+    st.code("¿Cómo es el proceso de onboarding?")
 
-# Botón
-if st.button("Enviar"):
-    if pregunta.strip() == "":
-        st.warning("Por favor escribe una pregunta.")
-    else:
-        st.write("💬 Respuesta del modelo aparecerá aquí...")
+# 🤹 Función de respuesta DEMO (luego aquí conectas tu modelo real)
+def generar_respuesta_demo(pregunta: str) -> str:
+    # Esta respuesta es solo para que el chat se vea vivo.
+    # Aquí luego puedes llamar a tu modelo con LangChain + Ollama.
+    respuesta = f"""
+He recibido tu pregunta:
+
+> **{pregunta}**
+
+🔍 *Versión demo:* aquí iría la respuesta inteligente del modelo de IA.
+
+Como soy un bot de RRHH en modo demostración, te puedo decir algo general:
+
+- Revisaría las políticas internas relacionadas con este tema.
+- Te daría una explicación clara y en lenguaje sencillo.
+- Si aplica, te indicaría con quién podrías hablar en RRHH para más detalle.
+
+Mientras conectas el modelo real, podemos imaginar que ya soy súper listo 😄
+"""
+    return respuesta
+
+# 💬 Mostrar historial de mensajes
+for msg in st.session_state.messages:
+    avatar = "🤖" if msg["role"] == "assistant" else "🧑‍💼"
+    with st.chat_message("assistant" if msg["role"] == "assistant" else "user", avatar=avatar):
+        st.markdown(msg["content"])
+
+# 🧾 Caja de entrada tipo ChatGPT
+prompt = st.chat_input("Escribe tu pregunta sobre Recursos Humanos aquí...")
+
+if prompt:
+    # 1) Agregamos el mensaje del usuario al historial
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user", avatar="🧑‍💼"):
+        st.markdown(prompt)
+
+    # 2) Generamos la respuesta (demo o modelo real)
+    with st.chat_message("assistant", avatar="🤖"):
+        with st.spinner("Pensando la mejor respuesta para ti... 💭"):
+            respuesta = generar_respuesta_demo(prompt)
+            st.markdown(respuesta)
+    st.session_state.messages.append({"role": "assistant", "content": respuesta})
+
 ```
 
 <img width="1267" height="973" alt="image" src="https://github.com/user-attachments/assets/80d5d110-5084-49db-99b2-9204e888775a" />
