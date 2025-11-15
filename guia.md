@@ -415,8 +415,6 @@ Abre `app.py` y **reemplaza todo el contenido** por este:
 import streamlit as st
 from langchain_ollama import ChatOllama
 
-# 1. Configuración de la página
-import streamlit as st
 
 # 🎨 Configuración básica de la página
 st.set_page_config(
@@ -485,7 +483,7 @@ if "messages" not in st.session_state:
         {
             "role": "assistant",
             "content": (
-                "👋 ¡Hola! Soy Amparito la de Recursos Humanos.\n\n"
+                "👋 ¡Hola! Soy tu Chatbot de Recursos Humanos.\n\n"
                 "Puedo ayudarte con cosas como:\n"
                 "- Políticas de vacaciones 🏖️\n"
                 "- Beneficios y bienestar 🎁\n"
@@ -496,13 +494,32 @@ if "messages" not in st.session_state:
         }
     ]
 
+# 🧱 Encabezado principal
+st.title("🤖 Chatbot para Recursos Humanos")
+st.caption("Tu asistente amigable de RRHH – cero tecnicismos, respuestas claras y un toque de humor 😄")
+
+# 🎯 Sidebar con información extra
+with st.sidebar:
+    st.subheader("Acerca de este chatbot")
+    st.write(
+        """
+        Este asistente está pensado para:
+        - Responder preguntas frecuentes de RRHH  
+        - Servir como ejemplo en un curso de IA  
+        - Mostrar cómo se ve un chat tipo ChatGPT con Streamlit  
+        """
+    )
+    st.markdown("---")
+    st.write("💡 Tip: prueba con preguntas como:")
+    st.code("¿Cuántos días de vacaciones tengo al año?")
+    st.code("¿Cómo es el proceso de onboarding?")
 
 # 2. Función para cargar el modelo de Ollama
 @st.cache_resource
 def cargar_modelo():
     # Modelo local y gratuito usando Ollama
     modelo = ChatOllama(
-        model="deepseek-r1:8b",   # nombre del modelo que bajaste con `ollama pull`
+        model="deepseek-r1:8b",   # nombre del modelo que bajaste con ⁠ ollama pull ⁠
         temperature=0.2     # qué tan creativo es (0 = muy serio, 1 = muy creativo)
     )
     return modelo
@@ -512,6 +529,26 @@ def responder_pregunta(pregunta: str) -> str:
     modelo = cargar_modelo()
     respuesta = modelo.invoke(pregunta)
     return respuesta.content
+
+# 💬 Mostrar historial del chat
+for msg in st.session_state.messages:
+    avatar = "🤖" if msg["role"] == "assistant" else "🧑‍💼"
+    with st.chat_message("assistant" if msg["role"] == "assistant" else "user", avatar=avatar):
+        st.markdown(msg["content"])
+
+# 🧾 Input del usuario
+prompt = st.chat_input("Escribe tu pregunta sobre Recursos Humanos aquí...")
+
+if prompt:
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user", avatar="🧑‍💼"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant", avatar="🤖"):
+        with st.spinner("Pensando la mejor respuesta para ti... 💭"):
+            respuesta = responder_pregunta(prompt)
+            st.markdown(respuesta)
+    st.session_state.messages.append({"role": "assistant", "content": respuesta})
 ```
 
 Puntos clave para explicar a alguien de RRHH:
