@@ -1,14 +1,10 @@
-¡Excelente punto\! Las imágenes son cruciales para un curso no técnico, ya que facilitan la comprensión visual de cada paso, especialmente en la configuración.
+## 🤖 ¡Manos a la Obra\! Guía Práctica para Construir tu Chatbot de RRHH con IA Local
 
-He integrado nuevamente las descripciones de las imágenes en las secciones correspondientes de la guía didáctica, siguiendo la estructura reorganizada.
-
-Aquí tienes la versión final y completa con las indicaciones visuales:
+**Bienvenido/a al curso de Inteligencia Artificial para RRHH.** Este proyecto te mostrará paso a paso cómo crear un asistente de chat tipo ChatGPT que funciona **directamente en tu computador** con el modelo **`deepseek-r1:1.5b`**.
 
 -----
 
-# 🤖 ¡Manos a la Obra\! Guía Práctica para Construir tu Chatbot de RRHH con IA Local
-
-**Nuestro Objetivo:** Crear un asistente de chat tipo ChatGPT, pero que funcione **directamente en tu computador** con el modelo **`deepseek-r1:1.5b`**.
+### 💡 Nuestro Kit de Herramientas
 
 | Componente | Rol (Explicación para RRHH) | Herramienta |
 | :--- | :--- | :--- |
@@ -32,17 +28,15 @@ Python es el idioma que usaremos para darle las instrucciones al chatbot.
 
 3.  Abre el instalador.
 
-4.  **⚠️ CLAVE:** Marca la casilla **✔️ "Add Python to PATH"** (Esto le dice a Windows dónde encontrar Python).
+4.  **⚠️ CLAVE:** Marca la casilla **✔️ "Add Python to PATH"**.
 
 5.  Haz clic en **Install Now**.
 
-6.  Para verificar, abre el **Símbolo del sistema** (Windows + buscar “cmd”) y escribe:
+6.  Para verificar, abre el **Símbolo del sistema** (`cmd`) y escribe:
 
     ```bash
     python --version
     ```
-
-    Debe aparecer algo como `Python 3.x.x`.
 
 ### 1.2. Instalar Visual Studio Code (VSCode)
 
@@ -50,7 +44,7 @@ VSCode es nuestro "editor" o cuaderno digital para escribir y guardar el código
 
 1.  Ve a: [https://code.visualstudio.com/](https://code.visualstudio.com/)
 2.  Descarga la versión para Windows e instálala con las opciones por defecto.
-3.  Ábrelo al finalizar la instalación.
+3.  Ábrelo al finalizar.
 
 -----
 
@@ -60,42 +54,40 @@ Aquí crearemos el espacio de trabajo aislado para nuestro chatbot.
 
 ### 2.1. Crear una Carpeta de Trabajo
 
-Crea una carpeta en un lugar fácil de recordar, por ejemplo, en tu Escritorio:
+Crea una carpeta en un lugar fácil de recordar:
 
 📁 `C:\Users\tu_usuario\Desktop\chatbot-rh`
 
 ### 2.2. Abrir VSCode en esa Carpeta
 
 1.  Abre VSCode.
-2.  Arrastra la carpeta `chatbot-rh` dentro del VSCode (o usa **File \> Open Folder**).
+2.  Arrastra la carpeta `chatbot-rh` dentro del VSCode.
 
-### 2.3. Crear un Entorno Virtual
+### 2.3. Crear y Activar un Entorno Virtual (`venv`)
 
-Un **entorno virtual** (`venv`) es una caja de herramientas exclusiva para este proyecto. Así, los programas que instalemos aquí no dañan otros programas de tu equipo.
+El entorno virtual aísla las librerías de este proyecto.
 
-Dentro de VSCode, abre la terminal: **Terminal \> New Terminal**.
+1.  Abre la terminal de VSCode (**Terminal \> New Terminal**).
 
-Escribe:
+2.  Crea el entorno:
 
-```bash
-python -m venv venv
-```
+    ```bash
+    python -m venv venv
+    ```
 
-Esto creará una carpeta llamada **`venv`** en tu proyecto.
+3.  Activa el entorno:
 
-### 2.4. Activar el Entorno
+    ```bash
+    venv\Scripts\activate.bat
+    ```
 
-En la misma terminal, escribe el comando para "entrar" a la caja de herramientas:
+    *Si tienes un error, prueba con `venv\Scripts\activate`*
 
-```bash
-venv\Scripts\activate.bat
-```
+    Si funciona, verás **`(venv)`** al inicio de la línea.
 
-Si funciona, verás el nombre del entorno antes de la ruta: **`(venv)`** `C:\Users\...`
+### 2.4. Instalar los Materiales (Librerías)
 
-### 2.5. Instalar los Materiales (Librerías)
-
-Con el entorno activado, instalaremos las tres piezas clave: Streamlit (el Cuerpo), LangChain (el Conector) y Ollama (para hablar con el Cerebro).
+Con el entorno activado, instalaremos los paquetes de Python necesarios:
 
 ```bash
 pip install streamlit langchain langchain-ollama python-dotenv ollama
@@ -103,9 +95,9 @@ pip install streamlit langchain langchain-ollama python-dotenv ollama
 
 -----
 
-## 🧠 ETAPA 3: El Cerebro Local (Ollama y deepseek-r1:1.5b)
+## 🧠 ETAPA 3: El Cerebro Local (Ollama y `deepseek-r1:1.5b`)
 
-Ollama es el programa que te permite tener modelos de IA **gratuitos y locales** en tu computador, como si fuera una "fábrica de cerebros".
+Ollama es la "fábrica de cerebros" que nos permite usar modelos de IA locales.
 
 ### 3.1. Descargar e Instalar Ollama (la Fábrica)
 
@@ -113,45 +105,180 @@ Ollama es el programa que te permite tener modelos de IA **gratuitos y locales**
 
 2.  Haz clic en **Download for Windows** e instálalo con las opciones por defecto.
 
-3.  Ollama se ejecutará en segundo plano automáticamente (lo verás en los iconos de la bandeja del sistema).
+3.  Ollama se ejecutará en segundo plano automáticamente.
 
 ### 3.2. Descargar el Modelo `deepseek-r1:1.5b`
 
-Ahora vamos a **bajar el modelo de IA** específico que usará el chatbot.
+Ahora bajaremos el modelo de IA específico.
 
-1.  Abre una terminal **nueva** (o usa la que ya tienes).
+1.  Abre una terminal nueva o usa la de VSCode.
 
-2.  Escribe el comando para hacer *pull* (descargar) del modelo que elegimos:
+2.  Escribe el comando para descargar el modelo:
 
     ```bash
     ollama pull deepseek-r1:1.5b
     ```
 
-      * La **primera vez** tardará varios minutos.
+    *La primera vez tardará varios minutos.*
 
 ### 3.3. Probar el Modelo (Opcional)
 
-Solo para confirmar que el cerebro funciona, puedes chatear un momento con él:
+Solo para confirmar que el cerebro funciona, chatea un momento con él. Para salir, presiona **Ctrl + C**.
 
 ```bash
 ollama run deepseek-r1:1.5b
 ```
 
-Escribe algo como: *Hola, ¿qué puedes hacer?*. Te responderá en la misma terminal. Para salir, presiona **Ctrl + C**.
-
 -----
 
 ## 🎨 ETAPA 4: El Cuerpo (Interfaz con Streamlit)
 
-Vamos a crear primero **lo que las personas verán** y con lo que interactuarán.
+Creamos la "cara" del chatbot.
+
+### 4.1. Crear el archivo `app.py` (Demo)
 
 En VSCode, crea un archivo llamado:
 
 📄 `app.py`
 
-Y pega el código de la interfaz (el esqueleto demo) que se encuentra en la sección anterior.
+Y pega el siguiente código. En esta etapa, el chatbot solo muestra la interfaz y una respuesta de **demostración** (aún no llama a la IA).
 
-### 4.1. Probar la Interfaz (sin Cerebro)
+```python
+import streamlit as st
+
+# 🎨 Configuración básica de la página
+st.set_page_config(
+    page_title="Chatbot RH",
+    page_icon="🤖",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# 🧼 CSS: fondo negro + letra blanca
+st.markdown(
+    """
+    <style>
+    /* Fondo negro */
+    .stApp {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+
+    /* Texto general en blanco */
+    * {
+        color: #ffffff !important;
+    }
+
+    /* Ocultar menú y pie de página de Streamlit */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Ajustar el ancho del contenedor principal */
+    .block-container {
+        max-width: 900px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Títulos centrados y blancos */
+    h1, h2, h3, h4, h5, h6 {
+        text-align: center;
+        color: #ffffff !important;
+    }
+
+    /* Sidebar oscuro */
+    section[data-testid="stSidebar"] {
+        background-color: #111111 !important;
+    }
+
+    /* Código dentro del sidebar */
+    .stCode, code {
+        color: #ffffff !important;
+        background-color: #222222 !important;
+    }
+
+    /* Chat bubbles */
+    .stChatMessage {
+        background-color: #111111 !important;
+        color: #ffffff !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# 🧠 Estado de la conversación (Mensaje de bienvenida)
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": (
+                "👋 ¡Hola! Soy tu Chatbot de Recursos Humanos.\n\n"
+                "Puedo ayudarte con cosas como:\n"
+                "- Políticas de vacaciones 🏖️\n"
+                "- Beneficios y bienestar 🎁\n"
+                "- Procesos de selección 🧑‍💼\n"
+                "- Onboarding de nuevas personas 🚀\n\n"
+                "Cuéntame, ¿qué te gustaría saber hoy?"
+            ),
+        }
+    ]
+
+# 🧱 Encabezado principal
+st.title("🤖 Chatbot para Recursos Humanos")
+st.caption("Tu asistente amigable de RRHH – cero tecnicismos, respuestas claras y un toque de humor 😄")
+
+# 🎯 Sidebar con información extra
+with st.sidebar:
+    st.subheader("Acerca de este chatbot")
+    st.write(
+        """
+        Este asistente está pensado para:
+        - Responder preguntas frecuentes de RRHH  
+        - Servir como ejemplo en un curso de IA  
+        - Mostrar cómo se ve un chat tipo ChatGPT con Streamlit  
+        """
+    )
+    st.markdown("---")
+    st.write("💡 Tip: prueba con preguntas como:")
+    st.code("¿Cuántos días de vacaciones tengo al año?")
+    st.code("¿Cómo es el proceso de onboarding?")
+
+# 🤹 Respuesta demo (Función de demostración, no usa la IA)
+def generar_respuesta_demo(pregunta: str) -> str:
+    respuesta = f"""
+He recibido tu pregunta:
+
+> *{pregunta}*
+
+🔍 **Versión demo:** aquí iría la respuesta inteligente del modelo de IA.
+
+Mientras conectamos el modelo real (`deepseek-r1:1.5b`), podemos imaginar que ya soy súper listo 😄
+"""
+    return respuesta
+
+# 💬 Mostrar historial del chat
+for msg in st.session_state.messages:
+    avatar = "🤖" if msg["role"] == "assistant" else "🧑‍💼"
+    with st.chat_message("assistant" if msg["role"] == "assistant" else "user", avatar=avatar):
+        st.markdown(msg["content"])
+
+# 🧾 Input del usuario
+prompt = st.chat_input("Escribe tu pregunta sobre Recursos Humanos aquí...")
+
+if prompt:
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user", avatar="🧑‍💼"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant", avatar="🤖"):
+        with st.spinner("Pensando la mejor respuesta para ti... 💭"):
+            respuesta = generar_respuesta_demo(prompt)
+            st.markdown(respuesta)
+    st.session_state.messages.append({"role": "assistant", "content": respuesta})
+```
+
+### 4.2. Probar la Interfaz
 
 En la terminal de VSCode (con el entorno activado `(venv)`), ejecuta:
 
@@ -159,42 +286,199 @@ En la terminal de VSCode (con el entorno activado `(venv)`), ejecuta:
 streamlit run app.py
 ```
 
-Se abrirá un navegador con tu interfaz ✨.
+Se abrirá un navegador con tu interfaz.
 
 -----
 
 ## 🔌 ETAPA 5: Conexión Final (El Chatbot Funcional)
 
-Ahora vamos a unir el **Cuerpo (Streamlit)** con el **Cerebro (deepseek-r1:1.5b vía LangChain)**.
+Unimos el **Cuerpo (Streamlit)** con el **Cerebro (deepseek-r1:1.5b vía LangChain)**.
 
-Abre `app.py` y **reemplaza TODO el contenido** por el código final que incluye las funciones para cargar el modelo y responder usando la IA:
+### 5.1. Reemplazar el código de `app.py`
 
-**(Insertar aquí el código completo y final de la Etapa 5)**
+Abre `app.py` y **reemplaza TODO el contenido** por este código final. Aquí se añade la lógica de LangChain para interactuar con Ollama.
 
-> *(Nota: El código completo es el mismo de la Etapa 5 de la respuesta anterior, pero aquí el objetivo es solo estructurar el Markdown y las imágenes, por lo que lo omito por brevedad, asumiendo que el usuario lo tiene)*
+```python
+import streamlit as st
+from langchain_ollama import ChatOllama
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
-### 5.1. Ejecutar el Chatbot Funcional
 
-Asegúrate de que la terminal de VSCode sigue activa con el entorno `(venv)` y **Ollama está corriendo** en segundo plano.
+# 🎨 Configuración básica de la página
+st.set_page_config(
+    page_title="Chatbot RH",
+    page_icon="🤖",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
-En la terminal, ejecuta de nuevo:
+# 🧼 CSS: fondo negro + letra blanca
+st.markdown(
+    """
+    <style>
+    /* Fondo negro */
+    .stApp {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+
+    /* Texto general en blanco */
+    * {
+        color: #ffffff !important;
+    }
+
+    /* Ocultar menú y pie de página de Streamlit */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Ajustar el ancho del contenedor principal */
+    .block-container {
+        max-width: 900px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Títulos centrados y blancos */
+    h1, h2, h3, h4, h5, h6 {
+        text-align: center;
+        color: #ffffff !important;
+    }
+
+    /* Sidebar oscuro */
+    section[data-testid="stSidebar"] {
+        background-color: #111111 !important;
+    }
+
+    /* Código dentro del sidebar */
+    .stCode, code {
+        color: #ffffff !important;
+        background-color: #222222 !important;
+    }
+
+    /* Chat bubbles */
+    .stChatMessage {
+        background-color: #111111 !important;
+        color: #ffffff !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# 🧠 Estado de la conversación (Mensaje de bienvenida)
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": (
+                "👋 ¡Hola! Soy tu Chatbot de Recursos Humanos.\n\n"
+                "Puedo ayudarte con cosas como:\n"
+                "- Políticas de vacaciones 🏖️\n"
+                "- Beneficios y bienestar 🎁\n"
+                "- Procesos de selección 🧑‍💼\n"
+                "- Onboarding de nuevas personas 🚀\n\n"
+                "Cuéntame, ¿qué te gustaría saber hoy?"
+            ),
+        }
+    ]
+
+# 🧱 Encabezado principal
+st.title("🤖 Chatbot para Recursos Humanos")
+st.caption("Tu asistente amigable de RRHH – cero tecnicismos, respuestas claras y un toque de humor 😄")
+
+# 🎯 Sidebar con información extra
+with st.sidebar:
+    st.subheader("Acerca de este chatbot")
+    st.write(
+        """
+        Este asistente está pensado para:
+        - Responder preguntas frecuentes de RRHH  
+        - Servir como ejemplo en un curso de IA  
+        - Mostrar cómo se ve un chat tipo ChatGPT con Streamlit  
+        """
+    )
+    st.markdown("---")
+    st.write("💡 Tip: prueba con preguntas como:")
+    st.code("¿Cuántos días de vacaciones tengo al año?")
+    st.code("¿Cómo es el proceso de onboarding?")
+
+# --- FUNCIONES CLAVE DE LA IA ---
+
+# 1. Función para cargar el modelo de Ollama
+@st.cache_resource
+def cargar_modelo():
+    # Modelo local y gratuito usando Ollama
+    modelo = ChatOllama(
+        # ¡IMPORTANTE! Usamos el modelo deepseek-r1:1.5b que descargamos en la Etapa 3.
+        model="deepseek-r1:1.5b",    
+        temperature=0.2          # Qué tan creativo es (0 = muy serio, 1 = muy creativo)
+    )
+    return modelo
+
+# 2. Función que envía la pregunta al modelo e incluye el historial
+def responder_pregunta(pregunta: str) -> str:
+    modelo = cargar_modelo()
+    
+    # 📝 Creamos el "contexto" o historial
+    mensajes = [
+        SystemMessage(content="Eres un asistente amigable de Recursos Humanos. Responde en español, de forma clara, con cero tecnicismos y un tono servicial. Céntrate solo en temas de RRHH."),
+    ]
+    
+    # Añadimos los mensajes del historial
+    for msg in st.session_state.messages:
+        if msg["role"] == "user":
+            mensajes.append(HumanMessage(content=msg["content"]))
+        elif msg["role"] == "assistant":
+            # Excluimos el mensaje de bienvenida inicial
+            if "¡Hola!" not in msg["content"]: 
+                mensajes.append(AIMessage(content=msg["content"]))
+    
+    # El último mensaje siempre es la pregunta actual
+    mensajes.append(HumanMessage(content=pregunta))
+
+    # 🚀 Llamamos al cerebro (al modelo)
+    respuesta = modelo.invoke(mensajes)
+    return respuesta.content
+
+# -----------------------------------
+
+
+# 💬 Mostrar historial del chat
+for msg in st.session_state.messages:
+    avatar = "🤖" if msg["role"] == "assistant" else "🧑‍💼"
+    with st.chat_message("assistant" if msg["role"] == "assistant" else "user", avatar=avatar):
+        st.markdown(msg["content"])
+
+# 🧾 Input del usuario
+prompt = st.chat_input("Escribe tu pregunta sobre Recursos Humanos aquí...")
+
+if prompt:
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user", avatar="🧑‍💼"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant", avatar="🤖"):
+        with st.spinner("Pensando la mejor respuesta para ti... 💭"):
+            # ¡Aquí llamamos a la IA real!
+            respuesta = responder_pregunta(prompt)
+            st.markdown(respuesta)
+    st.session_state.messages.append({"role": "assistant", "content": respuesta})
+```
+
+### 5.2. Ejecutar el Chatbot
+
+Asegúrate de que **Ollama está corriendo** en segundo plano. En la terminal, ejecuta de nuevo:
 
 ```bash
 streamlit run app.py
 ```
 
-¡Felicidades\! Ahora tienes un chatbot completamente funcional:
-
-  * **Bonito y usable** (gracias a Streamlit).
-  * **Inteligente** (gracias a `deepseek-r1:1.5b` y Ollama).
-  * **Organizado** (gracias a LangChain).
-
 -----
 
 ## 🎯 ¿Qué puedes hacer ahora? (Próximos Pasos)
 
-✔ **Cambiar el Rol:** Modifica el `SystemMessage` para que el chatbot se comporte como un especialista en **Bienestar** o **Cultura**.
-✔ **Agregar Contexto:** Investiga cómo usar LangChain con **RAG (Retrieval-Augmented Generation)** para que el chatbot pueda leer documentos internos.
-✔ **Guardar Conversaciones:** Implementa una base de datos para registrar las preguntas más frecuentes de los empleados.
+✔ **Cambiar el Rol:** Modifica el `SystemMessage` para especializar al chatbot.
+✔ **Agregar Contexto:** Investiga cómo usar LangChain con **RAG** para que el chatbot pueda leer **documentos internos** de RRHH.
+✔ **Ajustar el Modelo:** Experimenta cambiando el valor de `temperature` para un tono más formal o más creativo.
 
-¿Te gustaría que profundicemos en el concepto de **LangChain** y su papel como "Conector" para que puedas explicarlo mejor en clase?
+-----
