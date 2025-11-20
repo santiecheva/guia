@@ -59,22 +59,24 @@ import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_ollama import OllamaEmbeddings
 from dotenv import load_dotenv
 
-# Aseguramos que la configuración del modelo de embedding sea coherente
-EMBEDDING_MODEL = "deepseek-r1:1.5b" # Usamos el mismo modelo que para el chat
+# Modelo de Ollama que se usará para generar los embeddings de los documentos
+EMBEDDING_MODEL = "qwen2.5:0.5b"
 
 def create_vector_store():
     """
-    Carga documentos, los divide, crea embeddings y los guarda en una base de datos FAISS.
+    Carga todos los PDFs de la carpeta 'docs', los divide en fragmentos,
+    genera embeddings con Ollama y guarda el resultado en una base de datos
+    vectorial FAISS en disco.
     """
     print("--- 1. Cargando documentos desde la carpeta 'docs/' ---")
     
     docs_path = "./docs"
     documents = []
     
-    # Busca y carga todos los PDF en la carpeta docs
+    # Recorre la carpeta 'docs' y carga todos los archivos PDF encontrados
     for filename in os.listdir(docs_path):
         if filename.endswith(".pdf"):
             file_path = os.path.join(docs_path, filename)
@@ -83,35 +85,34 @@ def create_vector_store():
             print(f"  -> Documento cargado: {filename}")
 
     if not documents:
-        print("ADVERTENCIA: No se encontraron documentos PDF. Asegúrate de tener archivos en la carpeta 'docs'.")
+        print("ADVERTENCIA: No se encontraron documentos PDF. "
+              "Asegúrate de tener archivos en la carpeta 'docs'.")
         return
 
-    # 2. División de texto (Partir el conocimiento en trozos pequeños)
+    # 2. División de texto en fragmentos (chunks) manejables
     print("\n--- 2. Dividiendo el texto en fragmentos (chunks) ---")
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,      # Tamaño máximo de cada trozo de texto
-        chunk_overlap=200     # Cuántos caracteres se superponen entre trozos para no perder contexto
+        chunk_size=1000,      # Máximo de caracteres por fragmento
+        chunk_overlap=200     # Superposición entre fragmentos para no perder contexto
     )
     texts = text_splitter.split_documents(documents)
     print(f"  -> Total de fragmentos creados: {len(texts)}")
     
-    # 3. Creación de Embeddings (Conversión del texto a números)
+    # 3. Creación de embeddings (conversión de texto a vectores numéricos) usando Ollama
     print("\n--- 3. Creando embeddings con Ollama... (puede tardar) ---")
+    embeddings = OllamaEmbeddings(model=EMBEDDING_MODEL)
     
-    # Usamos el modelo de embeddings de Ollama (el mismo modelo deepseek-r1:1.5b)
-    # Nota: Ollama usa el mismo modelo LLM para generar embeddings por defecto.
-    embeddings = OllamaEmbeddings(model=EMBEDDING_MODEL) 
-    
-    # 4. Guardado en la Base de Datos Vectorial FAISS
-    print("\n--- 4. Guardando en la base de datos FAISS ---")
+    # 4. Creación y guardado de la base de datos vectorial FAISS
+    print("\n--- 4. Creando y guardando la base de datos FAISS ---")
     vector_store = FAISS.from_documents(texts, embeddings)
     
-    # Guardamos la base de datos en un archivo para usarla después
+    # Guardamos el índice FAISS en disco para poder reutilizarlo desde la app (Streamlit)
     vector_store.save_local("faiss_index_rh")
     print("\n✅ Base de conocimiento guardada como 'faiss_index_rh'. ¡Lista para usar!")
 
 if __name__ == "__main__":
     create_vector_store()
+
 ```
 
 ### 7.3. Ejecutar el Procesamiento
