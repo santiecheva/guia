@@ -136,22 +136,26 @@ Ahora modificaremos nuestro `app.py` para que use esta base de conocimiento expe
 Abre `app.py` y **reemplaza TODO el contenido** por este código final. Los cambios clave están en las funciones `cargar_modelo` y `responder_pregunta`, que ahora usan la base de conocimiento (`faiss_index_rh`).
 
 ```python
+import os  
 import streamlit as st
+from langchain_ollama import OllamaEmbeddings
 from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import OllamaEmbeddings
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
-# --- CONFIGURACIÓN DE MODELOS ---
+# --- CONFIGURACIÓN DE MODELOS Y RUTA DE LA BD VECTORIAL ---
+# LLM que usará Ollama para generar las respuestas
 LLM_MODEL = "deepseek-r1:1.5b"
-EMBEDDING_MODEL = "deepseek-r1:1.5b"
-VECTOR_STORE_PATH = "faiss_index_rh" # Carpeta donde guardamos el conocimiento
+# Modelo que usará Ollama para crear los embeddings
+EMBEDDING_MODEL = "qwen2.5:0.5b"
+# Carpeta donde se guardó el índice FAISS generado en knowledge_base.py
+VECTOR_STORE_PATH = "faiss_index_rh"
 
-# 🎨 Configuración básica de la página (El CSS y el sidebar permanecen iguales)
+# 🎨 Configuración básica de la página de Streamlit
 st.set_page_config(
     page_title="Chatbot RH Experto (RAG)",
     page_icon="🧠",
@@ -159,11 +163,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 🧼 CSS: fondo negro + letra blanca (Se mantiene el CSS completo de la guía anterior)
+# 🧼 CSS: modo oscuro básico para la app (fondo negro, texto blanco)
 st.markdown(
     """
     <style>
-    /* ... [Código CSS completo de la Etapa 5 aquí] ... */
     .stApp {background-color: #000000 !important; color: #ffffff !important;}
     * {color: #ffffff !important;}
     #MainMenu {visibility: hidden;}
@@ -180,120 +183,19 @@ st.markdown(
 
 # 🧱 Encabezado principal
 st.title("🧠 Chatbot RH Experto (RAG)")
-st.caption("Asistente alimentado por la IA local y tus documentos de RRHH. ¡Pregúntale sobre políticas!")
+st.caption("Asistente que combina IA local con tus documentos de RRHH para responder sobre políticas internas.")
 
-# 🎯 Sidebar con información extra (Actualizamos el mensaje para RAG)
+# 🎯 Sidebar con explicación de la app y ejemplos de uso
 with st.sidebar:
     st.subheader("Acerca de este chatbot RAG")
     st.write(
         f"""
-        Este asistente utiliza el modelo `{LLM_MODEL}` y ha sido entrenado
-        con tus documentos internos de RRHH.
-        """
-    )
-    st.markdown("---")
-    st.write("💡 Tip: Pregunta cosas específicas de tus documentos como:")
-    st.code("¿Cuál es la política de WFH para el equipo de ventas?")
-    st.code("¿Qué necesito para solicitar un beneficio de bienestar?")
+        Este asistente usa el modelo de lenguaje local `{LLM_MODEL}` y un índice vectorial
+        creado a partir de tus documentos internos de Recursos Humanos.
+        
+        Cuando haces una pregunta, primero busca fragmentos relevantes en esos documentos
+        y luego genera una respuesta basada en ese contexto (pat
 
-# 🧠 Estado de la conversación (Mensaje de bienvenida)
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {
-            "role": "assistant",
-            "content": (
-                "👋 ¡Hola! Soy tu Chatbot Experto en Políticas de Recursos Humanos.\n\n"
-                "He leído todos nuestros documentos. Cuéntame, ¿qué política o procedimiento te gustaría consultar hoy?"
-            ),
-        }
-    ]
-
-
-# --- FUNCIONES CLAVE DE LA IA CON RAG ---
-
-@st.cache_resource
-def get_rag_chain():
-    """Carga el LLM y la base de datos vectorial para crear la cadena RAG."""
-    
-    # 1. Cargar el LLM
-    llm = ChatOllama(model=LLM_MODEL, temperature=0.1)
-
-    # 2. Cargar el componente de Embeddings
-    embeddings = OllamaEmbeddings(model=EMBEDDING_MODEL)
-
-    # 3. Cargar la Base de Datos Vectorial FAISS
-    # Si no existe, muestra un error.
-    if not os.path.exists(VECTOR_STORE_PATH):
-        st.error(f"Error: La base de datos vectorial '{VECTOR_STORE_PATH}' no se encontró.")
-        st.stop()
-    
-    vector_store = FAISS.load_local(VECTOR_STORE_PATH, embeddings, allow_dangerous_deserialization=True)
-    retriever = vector_store.as_retriever(search_kwargs={"k": 3}) # El retriever busca los 3 trozos de info más relevantes
-    
-    # 4. Definir el Prompt para la IA (Instrucciones específicas)
-    template = """
-    Eres un asistente de Recursos Humanos experto en las políticas internas.
-    Tu tarea es responder a la pregunta basándote **únicamente** en el contexto proporcionado por los documentos.
-    Si la respuesta no se encuentra en el contexto, indica amablemente que no tienes la información sobre ese tema específico.
-    Responde en español, con un tono profesional y servicial.
-    
-    CONTEXTO:
-    {context}
-    
-    PREGUNTA:
-    {input}
-    """
-    prompt = ChatPromptTemplate.from_template(template)
-    
-    # 5. Crear la Cadena RAG (Unir el Retreiver, el Prompt y el LLM)
-    
-    # Define cómo el LLM debe combinar el contexto
-    document_chain = create_stuff_documents_chain(llm, prompt)
-    
-    # Crea la cadena final que primero busca (retrieval) y luego genera (generation)
-    rag_chain = create_retrieval_chain(retriever, document_chain)
-    
-    return rag_chain
-
-def responder_pregunta_rag(pregunta: str) -> str:
-    """Invoca la cadena RAG con la pregunta del usuario."""
-    rag_chain = get_rag_chain()
-    
-    # La cadena RAG ya maneja el contexto de recuperación
-    response = rag_chain.invoke({"input": pregunta})
-    
-    # El resultado de create_retrieval_chain viene en un diccionario con la clave 'answer'
-    return response['answer']
-
-# -----------------------------------
-
-# 💬 Mostrar historial del chat
-for msg in st.session_state.messages:
-    avatar = "🤖" if msg["role"] == "assistant" else "🧑‍💼"
-    with st.chat_message("assistant" if msg["role"] == "assistant" else "user", avatar=avatar):
-        st.markdown(msg["content"])
-
-# 🧾 Input del usuario
-prompt = st.chat_input("Escribe tu pregunta sobre políticas de RRHH aquí...")
-
-if prompt:
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user", avatar="🧑‍💼"):
-        st.markdown(prompt)
-
-    with st.chat_message("assistant", avatar="🤖"):
-        with st.spinner("Buscando en las políticas de RRHH y pensando... 💭"):
-            try:
-                # ¡Aquí llamamos a la función RAG!
-                respuesta = responder_pregunta_rag(prompt)
-                st.markdown(respuesta)
-            except Exception as e:
-                 # Manejo de error si la base de datos no carga
-                st.error("Error al acceder a la base de conocimiento. ¿Ejecutaste 'python knowledge_base.py' con Ollama activo?")
-                print(f"Detalle del error: {e}")
-                respuesta = "Lo siento, no pude acceder a las políticas internas."
-                
-    st.session_state.messages.append({"role": "assistant", "content": respuesta})
 ```
 
 ### 8.2. Ejecutar y Probar el Experto
