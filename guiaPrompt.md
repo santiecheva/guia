@@ -240,3 +240,50 @@ if prompt:
     st.session_state.messages.append({"role": "assistant", "content": respuesta})
 
 ```
+
+
+---
+
+## 🧐 Explicación Detallada de los Cambios en `app.py` (RAG y PE)
+
+Los principales cambios se centraron en la inicialización de los recursos RAG (FAISS y Embeddings) y la lógica central de la respuesta, que ahora utiliza las cadenas de LangChain para integrar el conocimiento de los documentos.
+
+### 1. ⚙️ Nuevas Variables de Configuración
+
+Se agregaron tres constantes para facilitar la gestión de los modelos y la ruta del conocimiento, haciendo el código más modular:
+
+| Variable | Valor | Propósito |
+| :--- | :--- | :--- |
+| `LLM_MODEL` | `"deepseek-r1:1.5b"` | El modelo usado para **generar** la respuesta final. |
+| `EMBEDDING_MODEL` | `"qwen2.5:0.5b"` | El modelo usado para **convertir texto en vectores** para la búsqueda (debe ser el mismo que en `knowledge_base.py`). |
+| `VECTOR_STORE_PATH` | `"faiss_index_rh"` | La ruta donde se guarda y carga la base de datos vectorial FAISS. |
+
+### 2. 🧠 Función `cargar_recursos()` (Inicialización RAG)
+
+Esta nueva función reemplaza a la antigua `cargar_modelo()` y es crucial:
+
+* **Carga el LLM (`llm`):** El modelo que ya teníamos para la conversación.
+* **Carga los Embeddings (`embeddings`):** El motor para entender los documentos.
+* **Carga FAISS:** Usa `FAISS.load_local()` para cargar la carpeta `faiss_index_rh` que se generó en la Etapa 7.
+* **Crea el `Retriever`:** El *Retriever* (`vector_store.as_retriever()`) es el componente de LangChain que se encarga de buscar los **fragmentos de documentos más relevantes** (usando `search_kwargs={"k": 3}`) para cada pregunta del usuario.
+
+### 3. 💬 Función `responder_pregunta_rag()` (El Motor RAG)
+
+Esta es la función central donde ocurre la magia:
+
+* **`prompt_template` (El Prompt Engineering):** Se usa `ChatPromptTemplate` para inyectar el **`SystemMessage` optimizado** que define el rol experto, la directiva clave de RAG y los guardarraíles. Incluye el *placeholder* `{context}` donde se insertarán los documentos encontrados.
+* **`document_chain`:** Combina el LLM (`llm`) con la plantilla de *prompt*. Su trabajo es tomar los documentos y generar la respuesta final.
+* **`retrieval_chain`:** El paso final. Une el **`retriever`** (buscador de documentos) con el **`document_chain`** (generador de respuesta). Esta cadena gestiona todo el flujo:
+    1.  Recibe la pregunta.
+    2.  Pasa la pregunta al `retriever`.
+    3.  El `retriever` encuentra los documentos relevantes.
+    4.  Los documentos se inyectan en el *prompt* como `{context}`.
+    5.  El LLM genera la respuesta experta final.
+
+### 4. 🔗 Función `convertir_historial_a_mensajes()`
+
+El `SystemMessage` y el contexto RAG se envían al modelo **antes** que el historial de chat. Esta función auxiliar asegura que el historial guardado en `st.session_state` se formatee correctamente como mensajes de `HumanMessage` y `AIMessage` para que el modelo mantenga la coherencia en la conversación.
+
+### 5. 🚀 Flujo Principal Actualizado
+
+El bloque `if prompt:` ahora llama a `responder_pregunta_rag()`, lo que activa todo el proceso de búsqueda RAG antes de mostrar la respuesta.
